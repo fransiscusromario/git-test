@@ -157,13 +157,7 @@ export class OrderFormComponent implements OnInit{
       qty: '',
       price:'',
       total_price: '',
-    });
-
-    this.unit = [{
-      id:1,
-      name:'',
-      price:0,
-    }];
+    })
   }
 
   removeProduct(i:number){

@@ -31,7 +31,6 @@ export class OrderFormComponent implements OnInit{
   products: any[] = [{
     id:1,
     itemId:0,
-    name: '',
     unit: '',
     qty: '',
     price:'',
@@ -146,7 +145,7 @@ export class OrderFormComponent implements OnInit{
     this.dc = ['Jakarta','Tangerang'];
   }
 
-  addProduct(){
+  addProduct(products:any){
     this.otherProduct = true;
     
     this.products.push({
@@ -166,7 +165,7 @@ export class OrderFormComponent implements OnInit{
     this.total = this.total - productDetail.total_price; 
   }
 
-  changeUnit(itemId:number){    
+  changeUnit(itemId:number,products:any){
     if(itemId == 1){    
       this.unit = this.greenfieldUnit;
     } else if (itemId == 2){

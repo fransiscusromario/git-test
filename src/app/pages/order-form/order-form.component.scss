@@ -1,0 +1,35 @@
+.card{
+    background-color: white;
+}
+
+.text-button{
+    border: none;
+    background-color: inherit;
+    padding: 14px 28px;
+    font-size: 16px;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.btn-warning{
+    color: white;
+}
+
+.confirm-button{
+    color: white;
+    background-color: #009A00;
+}
+
+.confirm-button:disabled{
+    border: 0 solid #999999;
+    background-color: #cccccc;
+    color: #666666;
+}
+
+.delete-icon{
+    float:left;
+}
+
+#select-product{
+    width: 90%;
+}

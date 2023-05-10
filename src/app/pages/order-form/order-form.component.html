@@ -1,0 +1,165 @@
+<div class="container">
+    <div class="container-fluid">
+        <h3>Create Order</h3>
+        <div class="row">
+            <div class="card">
+                <div class="card-body">
+                    <form [formGroup]="userForm">
+                        <div class="row">
+                            <div class="form-group col-12 col-lg-4 mb-3">
+                                <label class="form-label">Detail</label>
+                            </div>
+                            <div class="form-group col-12 col-lg-6 mb-3">
+                                <label class="form-label" for="select-name">Nama <span class="red-text">*</span></label>
+                                <select class="form-select mb-3" id="select-name" formControlName="name" (change)="setDcValue()">
+                                    <option value="" selected disabled>Name</option>
+                                    <option *ngFor="let employee of employeeName" [value]="employee['id']">{{employee['employee_name']}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-12 col-lg-4 mb-3">
+                                <label class="form-label" hidden>hidden</label>
+                            </div>
+                            <div class="form-group col-12 col-lg-4 mb-3">
+                                <label class="form-label" for="select-dc">Distribution Centre</label><span class="red-text">*</span>
+                                <select class="form-select mb-3" id="select-dc"  formControlName="dc">
+                                    <option value="" selected disabled>Distribution Centre</option>
+                                    <option *ngFor="let dc of dc" [value]="dc">{{dc}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- *ngIf="open" -->
+                    <form  #productForm="ngForm">
+                        <div class="row">
+                            <div class="form-group col-12 col-lg-4 mb-3">
+                                <label class="form-label" hidden>hidden</label>
+                            </div>
+                            <div class="form-group col-12 col-lg-4 mb-3">
+                                <label class="form-label" for="select-payment">Payment Type<span class="red-text">*</span></label>
+                                <select class="form-select mb-3" id="select-payment" ngModel name="payment_type" required>
+                                    <option value="" selected disabled>Payment Type</option>
+                                    <option *ngFor="let payment_type of payment_types" [value]="payment_type">{{payment_type}}</option>
+                                  </select>
+                            </div>
+                            <div class="form-group col-12 col-lg-4 mb-3">
+                                <label class="form-label" for="select-exp-date">Expired Date <span class="red-text">*</span></label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" placeholder="Expired Date" id="select-exp-date" bsDatepicker [minDate]="minDate" name="exp_date" ngModel required>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="basic-addon2">
+                                            <fa-icon [icon]="faChevronDown"></fa-icon>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-12 col-lg-4 mb-3">
+                                <label class="form-label" hidden>hidden</label>
+                            </div>
+                            <div class="form-group col-12 col-lg-6 mb-3">
+                                <label class="form-label" for="notes">Notes</label>
+                                <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px" id="notes"></textarea>
+                            </div>
+                        </div>
+                        <hr>
+                        <div>
+                            <section *ngFor="let product of products; let i = index">
+                                <div class="row">
+                                    <div class="form-group col-12 col-lg-4 mb-3">
+                                        <label class="form-label" for="payment_transaction_code">Products</label>
+                                    </div>
+                                    <div class="form-group col-12 col-lg-6 mb-3">
+                                        <label class="form-label" for="select-product">Product</label><span class="red-text">*</span>
+                                        <div>
+                                            <fa-icon class="delete-icon" [icon]="faMinusCircle" (click)="removeProduct(i)" *ngIf="i > 0"></fa-icon>
+                                            <select class="form-select mb-3" id="select-product" name="name_{{product.id}}" [(ngModel)]="product.itemId" required (change)="changeUnit(product.itemId)">
+                                                <option *ngFor="let item of productsType" [value]="item.id">{{item.name}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-12 col-lg-2 mb-3">
+                                        <label class="form-label" for="select-unit">Unit</label><span class="red-text">*</span>
+                                        <select class="form-select mb-3" id="select-unit" name="unit_{{product.id}}" [(ngModel)]="product.unit" required (change)="changePrice($event.target,product.id)">
+                                            <ng-container *ngIf="product.itemId==''; else elseTemplate">
+                                                <option value="" disabled>No Data Available</option>>
+                                            </ng-container>
+                                            <ng-template #elseTemplate>
+                                                <option *ngFor="let item of unit" [value]="item.id">{{item.name}}</option>
+                                            </ng-template>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-12 col-lg-4 mb-3">
+                                        <label class="form-label" for="payment_transaction_code" hidden>hidden</label>
+                                    </div>
+                                    <div class="form-group col-12 col-lg-2 mb-3">
+                                        <label class="form-label" for="qty-input">Quantity<span class="red-text">*</span></label>
+                                        <input type="text" class="form-control" id="qty-input" name="qty_{{product.id}}" [(ngModel)]="product.qty" (change)="updateTotal(product.qty,product.id)" required>
+                                    </div>
+                                    <div class="form-group col-12 col-lg-2 mb-3">
+                                        <label class="form-label" for="price-input">Price<span class="red-text">*</span></label>
+                                        <input type="text" class="form-control" id="price-input" name="price_{{product.id}}" [(ngModel)]="product.price" required disabled>
+                                    </div>
+                                    <div class="form-group col-12 col-lg-4 mb-3">
+                                        <label class="form-label" for="total-price">Total Price<span class="red-text">*</span></label>
+                                        <input type="text" class="form-control" id="total-price" disabled name="total_price_{{product.id}}" [(ngModel)]="product.total_price" required>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-12 col-lg-8 mb-3">
+                                        <label class="form-label" hidden>hidden</label>
+                                    </div>
+                                    <div class="form-group col-12 col-lg-4 mb-3">
+                                        <hr>
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <label class="form-label"><strong>Total Nett Price</strong></label>
+                                            </div>
+                                            <div class="col-lg-6 text-end">
+                                                <label class="form-label">{{product.total_price}}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-12 col-lg-4 mb-3">
+                                <label class="form-label" hidden>hidden</label>
+                            </div>
+                            <div class="form-group col-12 col-lg-6 mb-3 mx-3">
+                                <button type="button" class="btn btn-warning" (click)="addProduct()">New Item +</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-12 col-lg-8 mb-3">
+                                <label class="form-label" hidden>hidden</label>
+                            </div>
+                            <div class="form-group col-12 col-lg-4 mb-3">
+                                <hr>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <label class="form-label"><strong>Total</strong></label>
+                                    </div>
+                                    <div class="col-lg-6 text-end">
+                                        <label class="form-label">{{total}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                   <hr>
+                   <div class="text-end">
+                        <button type="button" class="text-button">Cancel</button>
+                        <button type="button" class="btn confirm-button"(click)="open ? submit() : createOrder()" [disabled]="!userForm.valid || !productForm.valid || total == 0">Confirm</button>
+                   </div> 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
